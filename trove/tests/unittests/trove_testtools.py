@@ -56,6 +56,7 @@ class TroveTestContext(TroveContext):
         self.notification = TroveTestNotification(
             self, request_id='req_id', flavor_id='7')
         self.notification.server_type = 'api'
+        self.tenant = '3086caf57b4a43b68db0dac4313f6e8c'
         patch_notifier(test_case)
 
 

@@ -1472,7 +1472,10 @@ class BackupTasks(object):
 
     @classmethod
     def delete_files_from_swift(cls, context, filename):
-        container = CONF.backup_swift_container
+        container = '%(prefix)s_%(tenant)s' % {
+            'prefix': CONF.backup_swift_container_prefix,
+            'tenant': context.tenant
+        }
         client = remote.create_swift_client(context)
         obj = client.head_object(container, filename)
         if 'x-static-large-object' in obj:

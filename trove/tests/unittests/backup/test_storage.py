@@ -65,9 +65,11 @@ class SwiftStorageSaveChecksumTests(trove_testtools.TestCase):
 
         self.assertTrue(success, "The backup should have been successful.")
         self.assertIsNotNone(note, "A note should have been returned.")
-        self.assertEqual('http://mockswift/v1/database_backups/123.gz.enc',
-                         location,
-                         "Incorrect swift location was returned.")
+        self.assertEqual(
+            'http://mockswift/v1/database_backups_'
+            '3086caf57b4a43b68db0dac4313f6e8c/123.gz.enc',
+            location,
+            "Incorrect swift location was returned.")
 
     def test_swift_checksum_save(self):
         """This tests that SwiftStorage.save returns the swift checksum for
@@ -93,9 +95,11 @@ class SwiftStorageSaveChecksumTests(trove_testtools.TestCase):
 
         self.assertTrue(success, "The backup should have been successful.")
         self.assertIsNotNone(note, "A note should have been returned.")
-        self.assertEqual('http://mockswift/v1/database_backups/123.gz.enc',
-                         location,
-                         "Incorrect swift location was returned.")
+        self.assertEqual(
+            'http://mockswift/v1/database_backups_'
+            '3086caf57b4a43b68db0dac4313f6e8c/123.gz.enc',
+            location,
+            "Incorrect swift location was returned.")
 
     @patch('trove.common.strategies.storage.swift.LOG')
     def test_swift_segment_checksum_etag_mismatch(self, mock_logging):
@@ -126,10 +130,12 @@ class SwiftStorageSaveChecksumTests(trove_testtools.TestCase):
         self.assertTrue(note.startswith("Error saving data to Swift!"))
         self.assertIsNone(checksum,
                           "Swift checksum should be None for failed backup.")
-        self.assertEqual('http://mockswift/v1/database_backups/'
-                         'bad_segment_etag_123.gz.enc',
-                         location,
-                         "Incorrect swift location was returned.")
+        self.assertEqual(
+            'http://mockswift/v1/database_backups_'
+            '3086caf57b4a43b68db0dac4313f6e8c/'
+            'bad_segment_etag_123.gz.enc',
+            location,
+            "Incorrect swift location was returned.")
 
     @patch('trove.common.strategies.storage.swift.LOG')
     def test_swift_checksum_etag_mismatch(self, mock_logging):
@@ -160,10 +166,12 @@ class SwiftStorageSaveChecksumTests(trove_testtools.TestCase):
         self.assertTrue(note.startswith("Error saving data to Swift!"))
         self.assertIsNone(checksum,
                           "Swift checksum should be None for failed backup.")
-        self.assertEqual('http://mockswift/v1/database_backups/'
-                         'bad_manifest_etag_123.gz.enc',
-                         location,
-                         "Incorrect swift location was returned.")
+        self.assertEqual(
+            'http://mockswift/v1/database_backups_'
+            '3086caf57b4a43b68db0dac4313f6e8c/'
+            'bad_manifest_etag_123.gz.enc',
+            location,
+            "Incorrect swift location was returned.")
 
 
 class SwiftStorageUtils(trove_testtools.TestCase):
@@ -264,15 +272,17 @@ class StreamReaderTests(trove_testtools.TestCase):
         self.runner = MockBackupStream(filename='123.xbstream.enc.gz',
                                        user='user',
                                        password='password')
+        self.container = 'database_backups_3086caf57b4a43b68db0dac4313f6e8c'
         self.stream = StreamReader(self.runner,
                                    self.runner.manifest,
+                                   self.container,
                                    max_file_size=100)
 
     def test_base_filename(self):
         self.assertEqual('123', self.stream.base_filename)
 
     def test_base_filename_no_extension(self):
-        stream_reader = StreamReader(self.runner, 'foo')
+        stream_reader = StreamReader(self.runner, 'foo', self.container)
         self.assertEqual('foo', stream_reader.base_filename)
 
     def test_segment(self):

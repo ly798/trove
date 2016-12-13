@@ -1013,6 +1013,7 @@ class BackupTasksTest(trove_testtools.TestCase):
 
     @patch('trove.taskmanager.models.LOG')
     def test_delete_backup_fail_delete_manifest(self, mock_logging):
+        context = trove_testtools.TroveTestContext(self)
         with patch.object(self.swift_client, 'delete_object',
                           side_effect=ClientException("foo")):
             with patch.object(self.swift_client, 'head_object',
@@ -1020,7 +1021,7 @@ class BackupTasksTest(trove_testtools.TestCase):
                 self.assertRaises(
                     TroveError,
                     taskmanager_models.BackupTasks.delete_backup,
-                    'dummy context', self.backup.id)
+                    context, self.backup.id)
                 self.assertFalse(backup_models.Backup.delete.called)
                 self.assertEqual(
                     state.BackupState.DELETE_FAILED,
@@ -1029,12 +1030,13 @@ class BackupTasksTest(trove_testtools.TestCase):
 
     @patch('trove.taskmanager.models.LOG')
     def test_delete_backup_fail_delete_segment(self, mock_logging):
+        context = trove_testtools.TroveTestContext(self)
         with patch.object(self.swift_client, 'delete_object',
                           side_effect=ClientException("foo")):
             self.assertRaises(
                 TroveError,
                 taskmanager_models.BackupTasks.delete_backup,
-                'dummy context', self.backup.id)
+                context, self.backup.id)
             self.assertFalse(backup_models.Backup.delete.called)
             self.assertEqual(
                 state.BackupState.DELETE_FAILED,
