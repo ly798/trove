@@ -252,7 +252,7 @@ class Backup(object):
             backup.save()
 
     @classmethod
-    def delete(cls, context, backup_id):
+    def delete(cls, context, backup_id, quota=True):
         """
         update Backup table on deleted flag for given Backup
         :param cls:
@@ -275,9 +275,11 @@ class Backup(object):
             cls.verify_swift_auth_token(context)
             api.API(context).delete_backup(backup_id)
 
-        return run_with_quotas(context.tenant,
-                               {'backups': -1},
-                               _delete_resources)
+        if quota:
+            return run_with_quotas(context.tenant,
+                                   {'backups': -1},
+                                   _delete_resources)
+        return _delete_resources()
 
     @classmethod
     def verify_swift_auth_token(cls, context):
