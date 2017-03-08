@@ -19,7 +19,7 @@ from trove.common.remote import normalize_url
 
 from cinderclient.v2 import client as CinderClient
 from neutronclient.v2_0 import client as NeutronClient
-from novaclient.v1_1.client import Client as NovaClient
+from novaclient.client import Client as NovaClient
 
 CONF = cfg.CONF
 
@@ -60,7 +60,8 @@ def nova_client_trove_admin(context=None):
     :return novaclient: novaclient with trove admin credentials
     :rtype: novaclient.v1_1.client.Client
     """
-    client = NovaClient(CONF.nova_proxy_admin_user,
+    client = NovaClient(CONF.nova_client_version,
+                        CONF.nova_proxy_admin_user,
                         CONF.nova_proxy_admin_pass,
                         CONF.nova_proxy_admin_tenant_name,
                         auth_url=PROXY_AUTH_URL,

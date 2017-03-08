@@ -503,6 +503,7 @@ class FreshInstanceTasks(FreshInstance, NotifyMixin, ConfigurationMixin):
             'datastore_version_id': self.datastore_version.id,
             'deleted': False,
             'replica_number': replica_number,
+            'quota': False,
         }
 
         replica_backup_id = None

@@ -49,7 +49,7 @@ class Backup(object):
 
     @classmethod
     def create(cls, context, instance, name, description=None,
-               parent_id=None, incremental=False):
+               parent_id=None, incremental=False, quota=True):
         """
         create db record for Backup
         :param cls:
@@ -124,9 +124,12 @@ class Backup(object):
                            }
             api.API(context).create_backup(backup_info, instance_id)
             return db_info
-        return run_with_quotas(context.tenant,
-                               {'backups': 1},
-                               _create_resources)
+
+        if quota:
+            return run_with_quotas(context.tenant,
+                                   {'backups': 1},
+                                   _create_resources)
+        return _create_resources()
 
     @classmethod
     def running(cls, instance_id, exclude=None):
