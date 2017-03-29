@@ -853,6 +853,11 @@ class Instance(BuiltInstance):
                     datastore1=backup_info.datastore.name,
                     datastore2=datastore.name)
 
+            if backup_info.datastore_version.name != datastore_version.name:
+                raise exception.BackupDatastoreVersionMismatchError(
+                    datastore_version1=backup_info.datastore_version.name,
+                    datastore_version2=datastore_version.name)
+
         if slave_of_id:
             call_args['replica_of'] = slave_of_id
             call_args['replica_count'] = replica_count

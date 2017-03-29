@@ -406,6 +406,12 @@ class BackupDatastoreMismatchError(TroveError):
                 " datastore of %(datastore2)s.")
 
 
+class BackupDatastoreVersionMismatchError(TroveError):
+    message = _("The datastore from which the backup was taken, "
+                "%(datastore_version1)s, does not match the destination"
+                " datastore of %(datastore_version2)s.")
+
+
 class SwiftAuthError(TroveError):
     message = _("Swift account not accessible for tenant %(tenant_id)s.")
 
