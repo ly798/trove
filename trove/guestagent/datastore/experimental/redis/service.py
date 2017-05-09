@@ -102,6 +102,7 @@ class RedisApp(object):
             override_strategy=OneFileOverrideStrategy(revision_dir))
 
         self.admin = self._build_admin_client()
+        self.admin.set_config_command_name(self.get_config_command_name())
         self.status = RedisAppStatus(self.admin)
 
     def _build_admin_client(self):
@@ -222,7 +223,8 @@ class RedisApp(object):
     def get_config_command_name(self):
         """Get current name of the 'CONFIG' command.
         """
-        renamed_cmds = self.configuration_manager.get_value('rename-command')
+        renamed_cmds = self.configuration_manager.get_value(
+            'rename-command') or []
         for name_pair in renamed_cmds:
             if name_pair[0] == 'CONFIG':
                 return name_pair[1]
