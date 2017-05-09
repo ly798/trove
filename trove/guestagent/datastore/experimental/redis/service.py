@@ -110,6 +110,10 @@ class RedisApp(object):
 
         return RedisAdmin(password=password, unix_socket_path=socket)
 
+    def _rebuild_admin_client(self):
+        self.admin = self._build_admin_client()
+        self.status.set_client(self.admin)
+
     def install_if_needed(self, packages):
         """
         Install redis if needed do nothing if it is already installed.
@@ -163,10 +167,16 @@ class RedisApp(object):
         Note that the 'CONFIG' command has been renamed to prevent
         users from using it to bypass configuration groups.
         """
+        needed = False
+        need_rebuild_configs = [u'requirepass', ]
         for prop_name, prop_args in overrides.items():
             args_string = self._join_lists(
                 self._value_converter.to_strings(prop_args), ' ')
             client.config_set(prop_name, args_string)
+            if prop_name in need_rebuild_configs:
+                needed = True
+        if needed:
+            self._rebuild_admin_client()
 
     def _join_lists(self, items, sep):
         """Join list items (including items from sub-lists) into a string.
