@@ -5,6 +5,16 @@
 
 dd if=/tmp/in_target.d/trove-guest.service of=/etc/systemd/system/trove-guest.service
 
+# install trove-guestagent
+tar xvf /tmp/in_target.d/trove.tar.gz -C /home/trovedb/
+cd /home/trovedb/trove
+sudo python setup.py install
+
+# create logfile
+sudo mkdir -p /var/log/trove
+sudo touch /var/log/trove/trove-guestagent.log
+sudo chown trovedb:root /var/log/trove/trove-guestagent.log
+
 systemctl enable trove-guest.service
 
 

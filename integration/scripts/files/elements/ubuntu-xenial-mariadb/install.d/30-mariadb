@@ -34,6 +34,9 @@ cat >/etc/mysql/my.cnf <<_EOF_
 !includedir /etc/mysql/conf.d/
 _EOF_
 
+# trove-guestagent needs to check this file
+cp /etc/mysql/conf.d/mariadb.cnf /etc/mysql/conf.d/trove-10-mariadb.cnf
+
 rm /etc/init.d/mysql
 systemctl daemon-reload
 systemctl enable mariadb

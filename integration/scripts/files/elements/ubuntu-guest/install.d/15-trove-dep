@@ -24,7 +24,8 @@ if [ -f ${TMP_HOOKS_DIR}/upper-constraints.txt ]; then
     UPPER_CONSTRAINTS=" -c ${TMP_HOOKS_DIR}/upper-constraints.txt"
 fi
 
-pip2 install -q --upgrade -r ${TMP_HOOKS_DIR}/requirements.txt ${UPPER_CONSTRAINTS}
+#pip2 install -q --upgrade -r ${TMP_HOOKS_DIR}/requirements.txt ${UPPER_CONSTRAINTS}
+pip2 install -q --upgrade -r ${TMP_HOOKS_DIR}/requirements.txt ${UPPER_CONSTRAINTS} -i https://pypi.tuna.tsinghua.edu.cn/simple
 
 echo "diagnostic pip freeze output follows"
 pip2 freeze
